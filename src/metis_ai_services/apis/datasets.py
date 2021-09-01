@@ -29,7 +29,8 @@ class DataSetsRes(Resource):
 
         Returns:
             list: All trails datasets in MetisAI.
-                  Example: ['cypto', 'covid', 'realestate', 'socialnetworkrelations', 'sports', 'socialissues', ...]
+                  Example: ['cypto', 'covid', 'realestate', 'socialnetworkrelations', 'sports',
+                            'socialissues', ...]
         """
         return default_datasets
 

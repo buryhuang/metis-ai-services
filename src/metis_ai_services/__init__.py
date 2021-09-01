@@ -14,7 +14,7 @@ bcrypt = Bcrypt()
 
 
 def create_app(config_name):
-    app = Flask("flask-api-tutorial")
+    app = Flask("Metis AI Services")
     app.config.from_object(get_config(config_name))
 
     cors.init_app(app)
