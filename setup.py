@@ -1,4 +1,4 @@
-"""Installation script for flask-api-tutorial application."""
+"""Installation script for MetisAI Services application."""
 from pathlib import Path
 from setuptools import setup, find_packages
 
