@@ -15,6 +15,18 @@ DEFAULT_NAME = "some-widget"
 DEFAULT_URL = "https://www.fakesite.com"
 DEFAULT_DEADLINE = date.today().strftime("%m/%d/%y")
 
+DS_NAME = "dataset_name_for_test"
+DS_OWNER_ID = "dataset_owner_id_for_test"
+
+
+def add_dataset(test_client, ds_name=DS_NAME, ds_description="", ds_owner_id=DS_OWNER_ID, ds_dataformat="CSV"):
+    return test_client.post(
+        url_for("api.widget_list"),
+        data=f"ds_name={ds_name}&ds_description={ds_description}&ds_owner_id={ds_owner_id}\
+              &ds_dataformat={ds_dataformat}",
+        content_type="application/x-www-form-urlencoded",
+    )
+
 
 def register_user(test_client, email=EMAIL, password=PASSWORD):
     return test_client.post(
@@ -33,15 +45,11 @@ def login_user(test_client, email=EMAIL, password=PASSWORD):
 
 
 def get_user(test_client, access_token):
-    return test_client.get(
-        url_for("api.auth_user"), headers={"Authorization": f"Bearer {access_token}"}
-    )
+    return test_client.get(url_for("api.auth_user"), headers={"Authorization": f"Bearer {access_token}"})
 
 
 def logout_user(test_client, access_token):
-    return test_client.post(
-        url_for("api.auth_logout"), headers={"Authorization": f"Bearer {access_token}"}
-    )
+    return test_client.post(url_for("api.auth_logout"), headers={"Authorization": f"Bearer {access_token}"})
 
 
 def create_widget(
