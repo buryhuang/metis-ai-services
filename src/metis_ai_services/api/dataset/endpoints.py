@@ -9,11 +9,20 @@ from metis_ai_services.api.dataset.business import (
     update_dataset,
     delete_dataset,
 )
-from metis_ai_services.api.dataset.dto import create_dataset_reqparser, update_dataset_reqparser, dataset_model
+from metis_ai_services.api.dataset.dto import (
+    create_dataset_reqparser,
+    update_dataset_reqparser,
+    pagination_reqparser,
+    dataset_model,
+    pagination_model,
+    pagination_links_model,
+)
 
 
 ns_dataset = Namespace(name="datasets", validate=True)
 ns_dataset.models[dataset_model.name] = dataset_model
+ns_dataset.models[pagination_model.name] = pagination_model
+ns_dataset.models[pagination_links_model.name] = pagination_links_model
 
 
 @ns_dataset.route("", endpoint="dataset_list")
@@ -24,10 +33,14 @@ class DataSetList(Resource):
     """Handles HTTP requests to URL: /datasets."""
 
     # @ns_dataset.doc(security="Bearer")
-    @ns_dataset.response(HTTPStatus.OK, "Retrieved widget list.")
+    @ns_dataset.response(HTTPStatus.OK, "Retrieved dataset list.", pagination_model)
+    @ns_dataset.expect(pagination_reqparser)
     def get(self):
         """Retrieve a list of datasets."""
-        return retrieve_dateset_list()
+        request_data = pagination_reqparser.parse_args()
+        page = request_data.get("page")
+        per_page = request_data.get("per_page")
+        return retrieve_dateset_list(page, per_page)
 
     @ns_dataset.expect(create_dataset_reqparser)
     @ns_dataset.response(int(HTTPStatus.CREATED), "New dataset was successfully created.")

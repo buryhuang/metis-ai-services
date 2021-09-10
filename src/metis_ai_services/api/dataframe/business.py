@@ -49,3 +49,7 @@ def delete_dataframe(ds_id, df_id):
 
 def export_dataframe(export_params):
     pass
+
+
+def query_dataframe(export_params):
+    pass

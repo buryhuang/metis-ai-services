@@ -9,11 +9,13 @@ from metis_ai_services.api.dataframe.business import (
     update_dataframe,
     delete_dataframe,
     export_dataframe,
+    query_dataframe,
 )
 from metis_ai_services.api.dataframe.dto import (
     create_dataframe_reqparser,
     update_dataset_reqparser,
     export_dataframe_reqparser,
+    query_dataframe_reqparser,
     dataframe_model,
 )
 
@@ -86,7 +88,6 @@ class DataFrameExport(Resource):
 
     @ns_dataframe.expect(export_dataframe_reqparser)
     @ns_dataframe.response(int(HTTPStatus.CREATED), "New dataset was successfully created.")
-    @ns_dataframe.response(int(HTTPStatus.CONFLICT), "Same name dataset iis already created.")
     @ns_dataframe.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
     @ns_dataframe.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Interal server error.")
     def post(self):
@@ -96,3 +97,19 @@ class DataFrameExport(Resource):
         # TODO: export the dataframe.
 
         return export_dataframe(export_params)
+
+
+@ns_dataframe.route("/query", endpoint="df_query")
+class DataFrameQuery(Resource):
+    """Handles HTTP requests to URL: /dataframes/query."""
+
+    @ns_dataframe.expect(query_dataframe_reqparser)
+    @ns_dataframe.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
+    @ns_dataframe.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Interal server error.")
+    def post(self):
+        """query on a dataframe."""
+        query_params = export_dataframe_reqparser.parse_args()
+
+        # TODO: query on a dataframe.
+
+        return query_dataframe(query_params)

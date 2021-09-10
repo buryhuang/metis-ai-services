@@ -1,4 +1,4 @@
-"""Class definition for Widget model."""
+"""Class definition for DataSet model."""
 from datetime import datetime, timezone, timedelta
 
 from sqlalchemy.ext.hybrid import hybrid_property
@@ -13,10 +13,10 @@ from metis_ai_services.utils.datetime_util import (
 )
 
 
-class Widget(db.Model):
-    """Widget model for a generic resource in a REST API."""
+class DataSet(db.Model):
+    """DataSet model for a generic resource in a REST API."""
 
-    __tablename__ = "widget"
+    __tablename__ = "dataset"
 
     id = db.Column(db.Integer, primary_key=True, autoincrement=True)
     name = db.Column(db.String(100), unique=True, nullable=False)
@@ -28,7 +28,7 @@ class Widget(db.Model):
     owner = db.relationship("User", backref=db.backref("widgets"))
 
     def __repr__(self):
-        return f"<Widget name={self.name}, info_url={self.info_url}>"
+        return f"<DataSet name={self.name}, info_url={self.info_url}>"
 
     @hybrid_property
     def created_at_str(self):
