@@ -6,7 +6,7 @@ import click
 from metis_ai_services import create_app, db
 from metis_ai_services.models.token_blacklist import BlacklistedToken
 from metis_ai_services.models.user import User
-from metis_ai_services.models.widget import Widget
+from metis_ai_services.models.dataset import DataSet
 
 app = create_app(os.getenv("FLASK_ENV", "development"))
 
@@ -17,7 +17,7 @@ def shell():
         "db": db,
         "User": User,
         "BlacklistedToken": BlacklistedToken,
-        "Widget": Widget,
+        "DataSet": DataSet,
     }
 
 

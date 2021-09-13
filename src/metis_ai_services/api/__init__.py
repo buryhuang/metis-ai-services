@@ -11,15 +11,15 @@ from metis_ai_services.api.auth.endpoints import auth_ns
 from metis_ai_services.api.dataset.endpoints import ns_dataset
 from metis_ai_services.api.dataframe.endpoints import ns_dataframe
 
-api_bp = Blueprint("api", __name__, url_prefix="/api/v1")
+api_bp = Blueprint("api", __name__, url_prefix="/v1")
 authorizations = {"Bearer": {"type": "apiKey", "in": "header", "name": "Authorization"}}
 
 api = Api(
     api_bp,
     version="1.0",
-    title="Flask API with JWT-Based Authentication",
+    title="Metis AI Services",
     description="Welcome to the Swagger UI documentation site!",
-    doc="/ui",
+    doc="/",
     authorizations=authorizations,
 )
 

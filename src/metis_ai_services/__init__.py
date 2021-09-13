@@ -1,11 +1,12 @@
 """Flask app initialization via factory pattern."""
+from threading import main_thread
 from flask import Flask
 from flask_bcrypt import Bcrypt
 from flask_cors import CORS
 from flask_migrate import Migrate
 from flask_sqlalchemy import SQLAlchemy
 
-from metis_ai_services.config import get_config
+from metis_ai_services.config import Config, get_config
 
 cors = CORS()
 db = SQLAlchemy()

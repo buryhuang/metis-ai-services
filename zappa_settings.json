@@ -1,0 +1,12 @@
+{
+    "dev": {
+        "app_function": "run.app",
+        "aws_region": "us-east-1",
+        "profile_name": "default",
+        "project_name": "metis-ai-services",
+        "runtime": "python3.7",
+        "s3_bucket": "zappa-metis-ai-services",
+        "certificate_arn": "arn:aws:acm:us-east-1:048156509593:certificate/70e58ab9-1e97-45c5-8cfd-5a5253092146",
+        "domain": "api.metis-ai.com"
+    }
+}
