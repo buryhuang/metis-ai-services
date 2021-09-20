@@ -5,6 +5,7 @@ from flask_restx import Namespace, Resource
 from metis_ai_services.api.dataset.business import (
     process_add_dataset,
     retrieve_dateset_list,
+    retrieve_mock_dateset_list,
     retrieve_dataset,
     update_dataset,
     delete_dataset,
@@ -40,7 +41,8 @@ class DataSetList(Resource):
         request_data = pagination_reqparser.parse_args()
         page = request_data.get("page")
         per_page = request_data.get("per_page")
-        return retrieve_dateset_list(page, per_page)
+        retrieve_dateset_list(page, per_page)
+        return retrieve_mock_dateset_list()
 
     @ns_dataset.expect(create_dataset_reqparser)
     @ns_dataset.response(int(HTTPStatus.CREATED), "New dataset was successfully created.")

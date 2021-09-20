@@ -23,6 +23,9 @@ create_dataset_reqparser = RequestParser(bundle_errors=True)
 create_dataset_reqparser.add_argument(name="ds_name", type=str, location="form", required=True, nullable=False)
 create_dataset_reqparser.add_argument(name="ds_owner_id", type=str, location="form", required=True, nullable=False)
 create_dataset_reqparser.add_argument(name="ds_description", type=str, location="form", required=False, nullable=True)
+create_dataset_reqparser.add_argument(
+    name="ds_init_timestamp", type=str, location="form", required=False, nullable=True
+)
 
 update_dataset_reqparser = create_dataset_reqparser.copy()
 update_dataset_reqparser.remove_argument("ds_name")
@@ -34,6 +37,9 @@ dataset_model = Model(
         "ds_name": String,
         "ds_description": String,
         "ds_owner_id": String,
+        "ds_files": Integer,
+        "ds_usability": Integer,
+        "ds_init_timestamp": String,
     },
 )
 
