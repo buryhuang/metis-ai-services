@@ -34,6 +34,7 @@ update_dataset_reqparser.remove_argument("df_name")
 export_dataframe_reqparser = RequestParser(bundle_errors=True)
 # TODO: query_dataframe_reqparser
 query_dataframe_reqparser = RequestParser(bundle_errors=True)
+query_dataframe_reqparser.add_argument(name="select_sql_stmt", type=str, location="form", required=True, nullable=False)
 
 dataframe_model = Model(
     "DataFrame",

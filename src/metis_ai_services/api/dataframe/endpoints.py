@@ -108,8 +108,7 @@ class DataFrameQuery(Resource):
     @ns_dataframe.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Interal server error.")
     def post(self):
         """query on a dataframe."""
-        query_params = export_dataframe_reqparser.parse_args()
-
-        # TODO: query on a dataframe.
-
-        return query_dataframe(query_params)
+        request_data = query_dataframe_reqparser.parse_args()
+        print(request_data)
+        select_sql_stmt = request_data.get("select_sql_stmt")
+        return query_dataframe(select_sql_stmt)

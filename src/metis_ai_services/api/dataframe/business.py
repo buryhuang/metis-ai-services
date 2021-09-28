@@ -3,6 +3,7 @@ from http import HTTPStatus
 from uuid import uuid4
 
 from flask import jsonify
+from metis_ai_services.utils.mariadb import exec_select_stmt
 
 
 def upload_dataframe(ds_id: str, df_name: str, df_description: str, df_dataformat: str):
@@ -51,5 +52,6 @@ def export_dataframe(export_params):
     pass
 
 
-def query_dataframe(export_params):
-    pass
+def query_dataframe(select_sql_stmt):
+    resp_json = exec_select_stmt(select_sql_stmt)
+    return resp_json
