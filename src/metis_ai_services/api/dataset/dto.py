@@ -19,13 +19,10 @@ def validate_name(name):
 
 # bundle_errors=True: all error messages reported for all arguments in our request parser.
 create_dataset_reqparser = RequestParser(bundle_errors=True)
-# Add Argument Ref.
-create_dataset_reqparser.add_argument(name="ds_name", type=str, location="form", required=True, nullable=False)
-create_dataset_reqparser.add_argument(name="ds_owner_id", type=str, location="form", required=True, nullable=False)
-create_dataset_reqparser.add_argument(name="ds_description", type=str, location="form", required=False, nullable=True)
-create_dataset_reqparser.add_argument(
-    name="ds_init_timestamp", type=str, location="form", required=False, nullable=True
-)
+create_dataset_reqparser.add_argument(name="name", type=str, location="form", required=True, nullable=False)
+create_dataset_reqparser.add_argument(name="description", type=str, location="form", required=False, nullable=True)
+create_dataset_reqparser.add_argument(name="owner_id", type=str, location="form", required=True, nullable=False)
+create_dataset_reqparser.add_argument(name="image_url", type=str, location="form", required=True, nullable=False)
 
 update_dataset_reqparser = create_dataset_reqparser.copy()
 update_dataset_reqparser.remove_argument("ds_name")
@@ -33,13 +30,12 @@ update_dataset_reqparser.remove_argument("ds_name")
 dataset_model = Model(
     "DataSet",
     {
-        "ds_id": String,
-        "ds_name": String,
-        "ds_description": String,
-        "ds_owner_id": String,
-        "ds_files": Integer,
-        "ds_usability": Integer,
-        "ds_init_timestamp": String,
+        "id": String,
+        "name": String,
+        "description": String,
+        "created_at": String,
+        "owner_id": String,
+        "image_url": String,
     },
 )
 

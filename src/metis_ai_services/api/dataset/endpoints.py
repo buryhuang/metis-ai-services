@@ -4,8 +4,8 @@ from http import HTTPStatus
 from flask_restx import Namespace, Resource
 from metis_ai_services.api.dataset.business import (
     process_add_dataset,
-    # retrieve_dateset_list,
-    retrieve_mock_dateset_list,
+    retrieve_dateset_list,
+    # retrieve_mock_dateset_list,
     retrieve_dataset,
     update_dataset,
     delete_dataset,
@@ -38,11 +38,10 @@ class DataSetList(Resource):
     @ns_dataset.expect(pagination_reqparser)
     def get(self):
         """Retrieve a list of datasets."""
-        # request_data = pagination_reqparser.parse_args()
-        # page = request_data.get("page")
-        # per_page = request_data.get("per_page")
-        # retrieve_dateset_list(page, per_page)
-        return retrieve_mock_dateset_list()
+        request_data = pagination_reqparser.parse_args()
+        page = request_data.get("page")
+        per_page = request_data.get("per_page")
+        return retrieve_dateset_list(page, per_page)
 
     @ns_dataset.expect(create_dataset_reqparser)
     @ns_dataset.response(int(HTTPStatus.CREATED), "New dataset was successfully created.")
@@ -51,16 +50,8 @@ class DataSetList(Resource):
     @ns_dataset.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Interal server error.")
     def post(self):
         """create a new dataset."""
-        req_data = create_dataset_reqparser.parse_args()
-
-        ds_name = req_data.get("ds_name")
-        ds_description = req_data.get("ds_description")
-        ds_owner_id = req_data.get("ds_owner_id")
-        ds_dataformat = req_data.get("ds_dataformat")
-
-        # TODO: validate the new dataset attributes.
-
-        return process_add_dataset(ds_name, ds_description, ds_owner_id, ds_dataformat)
+        new_ds_dict = create_dataset_reqparser.parse_args()
+        return process_add_dataset(new_ds_dict)
 
 
 @ns_dataset.route("/<ds_id>", endpoint="dataset")

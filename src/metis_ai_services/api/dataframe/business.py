@@ -3,7 +3,9 @@ from http import HTTPStatus
 from uuid import uuid4
 
 from flask import jsonify
-from metis_ai_services.utils.mariadb import exec_select_stmt
+
+# from metis_ai_services.utils.mariadb_util import exec_select_stmt
+from metis_ai_services.utils.s3_util import exec_select_stmt
 
 
 def upload_dataframe(ds_id: str, df_name: str, df_description: str, df_dataformat: str):
