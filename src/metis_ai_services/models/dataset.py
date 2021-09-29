@@ -1,6 +1,6 @@
 """Class definition for DataSet model."""
 from datetime import datetime, timezone, timedelta
-from sqlalchemy import Column, String, DateTime, ForeignKey
+from sqlalchemy import Column, String, DateTime
 
 # from sqlalchemy.orm import relationship
 # from sqlalchemy.ext.declarative import declarative_base
@@ -15,19 +15,10 @@ from metis_ai_services.utils.datetime_util import (
 )
 from metis_ai_services.utils.sql_util import dump_datetime
 
-# Base = declarative_base()
-
 
 class DataSet(db.Model):
     """DataSet model for a generic resource in a REST API."""
 
-    # "ds_id": String,
-    # "ds_name": String,
-    # "ds_description": String,
-    # "ds_owner_id": String,
-    # "ds_files": Integer,
-    # "ds_usability": Integer,
-    # "ds_init_timestamp": String,
     __tablename__ = "dataset"
 
     id = Column(String(64), primary_key=True)
@@ -86,15 +77,3 @@ class DataSet(db.Model):
     @classmethod
     def find_by_name(cls, name):
         return cls.query.filter_by(name=name).first()
-
-
-# engine = create_engine("sqlite:///myexample.db")  # Access the DB Engine
-# if not engine.dialect.has_table(engine, Variable_tableName):  # If table don't exist, Create.
-#     metadata = MetaData(engine)
-#     # Create a table with the appropriate Columns
-#     Table(Variable_tableName, metadata,
-#           Column('Id', Integer, primary_key=True, nullable=False),
-#           Column('Date', Date), Column('Country', String),
-#           Column('Brand', String), Column('Price', Float),
-#     # Implement the creation
-#     metadata.create_all()
