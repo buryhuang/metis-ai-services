@@ -35,5 +35,11 @@ def create_app(config_name):
 def init_db(conf):
     engine = create_engine(conf.get("SQLALCHEMY_DATABASE_URI"), echo=True)
     from metis_ai_services.models.dataset import DataSet
+    from metis_ai_services.models.dataframe import DataFrame
+    from metis_ai_services.models.user import User
+    from metis_ai_services.models.token_blacklist import BlacklistedToken
 
     DataSet.__table__.create(bind=engine, checkfirst=True)
+    User.__table__.create(bind=engine, checkfirst=True)
+    BlacklistedToken.__table__.create(bind=engine, checkfirst=True)
+    DataFrame.__table__.create(bind=engine, checkfirst=True)

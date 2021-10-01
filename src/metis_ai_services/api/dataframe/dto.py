@@ -18,13 +18,10 @@ def validate_name(name):
 
 # bundle_errors=True: all error messages reported for all arguments in our request parser.
 create_dataframe_reqparser = RequestParser(bundle_errors=True)
-# Add Argument Ref.
-create_dataframe_reqparser.add_argument(name="df_id", type=str, location="form", required=True, nullable=False)
-create_dataframe_reqparser.add_argument(name="df_name", type=str, location="form", required=True, nullable=False)
-create_dataframe_reqparser.add_argument(name="df_uri", type=str, location="form", required=True, nullable=False)
+create_dataframe_reqparser.add_argument(name="name", type=str, location="form", required=True, nullable=False)
+create_dataframe_reqparser.add_argument(name="uri", type=str, location="form", required=True, nullable=False)
 create_dataframe_reqparser.add_argument(name="ds_id", type=str, location="form", required=True, nullable=False)
-create_dataframe_reqparser.add_argument(name="df_description", type=str, location="form", required=False, nullable=True)
-create_dataframe_reqparser.add_argument(name="df_dataformat", type=str, location="form", required=False, nullable=True)
+create_dataframe_reqparser.add_argument(name="description", type=str, location="form", required=False, nullable=True)
 
 update_dataset_reqparser = create_dataframe_reqparser.copy()
 update_dataset_reqparser.remove_argument("df_name")
@@ -38,12 +35,5 @@ query_dataframe_reqparser.add_argument(name="select_sql_stmt", type=str, locatio
 
 dataframe_model = Model(
     "DataFrame",
-    {
-        "df_id": String,
-        "df_name": String,
-        "df_uri": String,
-        "ds_id": String,
-        "df_description": String,
-        "df_dataformat": String,
-    },
+    {"id": String, "name": String, "uri": String, "ds_id": String, "description": String},
 )

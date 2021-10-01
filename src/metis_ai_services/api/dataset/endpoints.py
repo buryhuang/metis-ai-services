@@ -1,18 +1,19 @@
 """API endpoint definitions for /datasets namespace."""
 from http import HTTPStatus
-
 from flask_restx import Namespace, Resource
 from metis_ai_services.api.dataset.business import (
     process_add_dataset,
     retrieve_dateset_list,
     # retrieve_mock_dateset_list,
     retrieve_dataset,
-    update_dataset,
+    # update_dataset,
     delete_dataset,
+    search_datasets_by_keywords,
 )
 from metis_ai_services.api.dataset.dto import (
     create_dataset_reqparser,
-    update_dataset_reqparser,
+    search_dataset_reqparser,
+    # update_dataset_reqparser,
     pagination_reqparser,
     dataset_model,
     pagination_model,
@@ -54,6 +55,20 @@ class DataSetList(Resource):
         return process_add_dataset(new_ds_dict)
 
 
+@ns_dataset.route("/search", endpoint="ds_search")
+class DataSetSearch(Resource):
+    """Handles HTTP requests to URL: /datasets/search."""
+
+    @ns_dataset.expect(search_dataset_reqparser)
+    @ns_dataset.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
+    @ns_dataset.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Interal server error.")
+    def post(self):
+        """query on a dataframe."""
+        request_data = search_dataset_reqparser.parse_args()
+        keywords = request_data.get("keywords")
+        return search_datasets_by_keywords(keywords)
+
+
 @ns_dataset.route("/<ds_id>", endpoint="dataset")
 class DataSet(Resource):
     """Handles HTTP requests to URL: /datasets/{ds_id}."""
@@ -64,14 +79,14 @@ class DataSet(Resource):
         """Retrieve a dataset."""
         return retrieve_dataset(ds_id)
 
-    @ns_dataset.response(int(HTTPStatus.OK), "Dataset was updated.", dataset_model)
-    @ns_dataset.response(int(HTTPStatus.CREATED), "Added new widget.")
-    @ns_dataset.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
-    @ns_dataset.expect(update_dataset_reqparser)
-    def put(self, ds_id):
-        """Update a dataset."""
-        dataset_dict = update_dataset_reqparser.parse_args()
-        return update_dataset(dataset_dict)
+    # @ns_dataset.response(int(HTTPStatus.OK), "Dataset was updated.", dataset_model)
+    # @ns_dataset.response(int(HTTPStatus.CREATED), "Added new widget.")
+    # @ns_dataset.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
+    # @ns_dataset.expect(update_dataset_reqparser)
+    # def put(self, ds_id):
+    #     """Update a dataset."""
+    #     dataset_dict = update_dataset_reqparser.parse_args()
+    #     return update_dataset(dataset_dict)
 
     @ns_dataset.response(int(HTTPStatus.NO_CONTENT), "Dataset was deleted.")
     @ns_dataset.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")

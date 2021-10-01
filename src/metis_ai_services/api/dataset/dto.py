@@ -24,8 +24,15 @@ create_dataset_reqparser.add_argument(name="description", type=str, location="fo
 create_dataset_reqparser.add_argument(name="owner_id", type=str, location="form", required=True, nullable=False)
 create_dataset_reqparser.add_argument(name="image_url", type=str, location="form", required=True, nullable=False)
 
+search_dataset_reqparser = RequestParser(bundle_errors=True)
+search_dataset_reqparser.add_argument(name="keywords", type=str, location="form", required=True, nullable=False)
+
 update_dataset_reqparser = create_dataset_reqparser.copy()
 update_dataset_reqparser.remove_argument("ds_name")
+
+pagination_reqparser = RequestParser(bundle_errors=True)
+pagination_reqparser.add_argument("page", type=positive, required=False, default=1)
+pagination_reqparser.add_argument("per_page", type=positive, required=False, choices=[5, 10, 25, 50, 100], default=10)
 
 dataset_model = Model(
     "DataSet",
@@ -38,11 +45,6 @@ dataset_model = Model(
         "image_url": String,
     },
 )
-
-
-pagination_reqparser = RequestParser(bundle_errors=True)
-pagination_reqparser.add_argument("page", type=positive, required=False, default=1)
-pagination_reqparser.add_argument("per_page", type=positive, required=False, choices=[5, 10, 25, 50, 100], default=10)
 
 pagination_links_model = Model(
     "Nav Links",

@@ -4,10 +4,9 @@ from uuid import uuid4
 from flask import jsonify, url_for
 from flask_restx import marshal
 
+from metis_ai_services import db
 from metis_ai_services.api.dataset.dto import pagination_model
 from metis_ai_services.models.dataset import DataSet
-
-from metis_ai_services import db
 
 
 def process_add_dataset(ds_dict):
@@ -17,7 +16,7 @@ def process_add_dataset(ds_dict):
     db.session.commit()
 
     name = ds_dict["name"]
-    resp = jsonify(status="success", message=f"New widget added: {name}.")
+    resp = jsonify(id=ds_dict["id"], status="success", message=f"New Dataset added: {name}.")
     resp.status_code = HTTPStatus.CREATED
     resp.headers["Cache-Control"] = "no-store"
     resp.headers["Pragma"] = "no-cache"
@@ -37,6 +36,13 @@ def retrieve_dateset_list(page, per_page):
     resp = jsonify(resp_data)
     resp.headers["Link"] = _pagination_nav_header_links(pagination)
     resp.headers["Total-Count"] = pagination.total
+    return resp
+
+
+def search_datasets_by_keywords(keywords):
+    search = "%{}%".format(keywords)
+    match_dss = DataSet.query.filter(DataSet.name.like(search)).all()
+    resp = jsonify([ds.serialize for ds in match_dss])
     return resp
 
 
