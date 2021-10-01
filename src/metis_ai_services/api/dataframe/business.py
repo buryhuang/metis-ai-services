@@ -16,7 +16,7 @@ def process_add_dataframe(df_dict):
     db.session.commit()
 
     name = df_dict["name"]
-    resp = jsonify(status="success", message=f"New DataFrame added: {name}.")
+    resp = jsonify(id=df_dict["id"], status="success", message=f"New DataFrame added: {name}.")
     resp.status_code = HTTPStatus.CREATED
     resp.headers["Cache-Control"] = "no-store"
     resp.headers["Pragma"] = "no-cache"
