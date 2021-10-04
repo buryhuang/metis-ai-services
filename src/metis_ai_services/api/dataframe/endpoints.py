@@ -13,6 +13,7 @@ from metis_ai_services.api.dataframe.business import (
 )
 from metis_ai_services.api.dataframe.dto import (
     create_dataframe_reqparser,
+    retrieve_dataframe_reqparser,
     update_dataset_reqparser,
     export_dataframe_reqparser,
     query_dataframe_reqparser,
@@ -32,7 +33,7 @@ class DataFrameList(Resource):
     """Handles HTTP requests to URL: /dataframes."""
 
     # @ns_dataset.doc(security="Bearer")
-    @ns_dataframe.response(HTTPStatus.OK, "Retrieved widget list.")
+    @ns_dataframe.response(HTTPStatus.OK, "Retrieved dataframe list.")
     def get(self):
         """Retrieve a list of dataframes."""
         return retrieve_dataframe_list()
@@ -58,20 +59,20 @@ class DataFrame(Resource):
         """Retrieve a dataframe."""
         return retrieve_dataframe(df_id)
 
-    # @ns_dataframe.response(int(HTTPStatus.OK), "Dataset was updated.", dataframe_model)
-    # @ns_dataframe.response(int(HTTPStatus.CREATED), "Added new widget.")
+    @ns_dataframe.response(int(HTTPStatus.OK), "Dataframe was updated.", dataframe_model)
+    @ns_dataframe.response(int(HTTPStatus.CREATED), "Added new widget.")
     # @ns_dataframe.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
-    # @ns_dataframe.expect(update_dataset_reqparser)
-    # def put(self, df_id):
-    #     """Update a dataframe."""
-    #     # dataset_dict = update_dataset_reqparser.parse_args()
-    #     return update_dataframe(df_id)
+    @ns_dataframe.expect(update_dataset_reqparser)
+    def put(self, df_id):
+        """Update a dataframe."""
+        df_params = update_dataset_reqparser.parse_args()
+        return update_dataframe(df_id, df_params)
 
-    # @ns_dataframe.response(int(HTTPStatus.NO_CONTENT), "Dataset was deleted.")
+    @ns_dataframe.response(int(HTTPStatus.NO_CONTENT), "Dataframe was deleted.")
     # @ns_dataframe.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
-    # def delete(self, df_id):
-    #     """Delete a dataframe."""
-    #     return delete_dataframe(df_id)
+    def delete(self, df_id):
+        """Delete a dataframe."""
+        return delete_dataframe(df_id)
 
 
 # @ns_dataframe.route("/export", endpoint="df_export")

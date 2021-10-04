@@ -7,7 +7,7 @@ import pandasql as pdsql
 def get_s3_df(uri):
     AWS_ACCESS_KEY_ID = "AKIAQWNS2AWMWMXEPS3Q"
     AWS_SECRET_ACCESS_KEY = "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"
-    AWS_S3_BUCKET = "meitisa-api-data"
+    AWS_S3_BUCKET = "metisai-api-data"
     s3_key = uri.split(AWS_S3_BUCKET)[-1][1:]
     print(f"s3_key={s3_key}")
     s3_client = boto3.client("s3", aws_access_key_id=AWS_ACCESS_KEY_ID, aws_secret_access_key=AWS_SECRET_ACCESS_KEY)

@@ -73,8 +73,8 @@ class DataSetSearch(Resource):
 class DataSet(Resource):
     """Handles HTTP requests to URL: /datasets/{ds_id}."""
 
+    # @ns_dataset.marshal_with(dataset_model)
     @ns_dataset.response(int(HTTPStatus.OK), "Retrieved dataset.", dataset_model)
-    @ns_dataset.marshal_with(dataset_model)
     def get(self, ds_id):
         """Retrieve a dataset."""
         return retrieve_dataset(ds_id)

@@ -23,8 +23,13 @@ create_dataframe_reqparser.add_argument(name="uri", type=str, location="form", r
 create_dataframe_reqparser.add_argument(name="ds_id", type=str, location="form", required=True, nullable=False)
 create_dataframe_reqparser.add_argument(name="description", type=str, location="form", required=False, nullable=True)
 
-update_dataset_reqparser = create_dataframe_reqparser.copy()
-update_dataset_reqparser.remove_argument("df_name")
+retrieve_dataframe_reqparser = RequestParser(bundle_errors=True)
+retrieve_dataframe_reqparser.add_argument(name="ds_id", type=str, location="form", required=False, nullable=True)
+
+update_dataset_reqparser = RequestParser(bundle_errors=True)
+update_dataset_reqparser.add_argument(name="uri", type=str, location="form", required=False, nullable=True)
+update_dataset_reqparser.add_argument(name="ds_id", type=str, location="form", required=False, nullable=True)
+update_dataset_reqparser.add_argument(name="description", type=str, location="form", required=False, nullable=True)
 
 
 # TODO: export_dataframe_reqparser

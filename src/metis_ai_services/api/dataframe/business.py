@@ -36,12 +36,39 @@ def retrieve_dataframe(df_id):
 
 
 # @token_required
-def update_dataframe(df_id):
-    pass
+def update_dataframe(df_id, df_params):
+    msg = ""
+    try:
+        df = DataFrame.query.filter_by(id=df_id).first()
+        if df:
+            if df_params["uri"] is not None:
+                df.uri = df_params["uri"]
+            if df_params["ds_id"] is not None:
+                df.ds_id = df_params["ds_id"]
+            if df_params["description"] is not None:
+                df.description = df_params["description"]
+            db.session.commit()
+            msg = f"dataframe[{df_id}] was updated."
+        else:
+            msg = f"dataframe[{df_id}] was not found."
+    except Exception as e:
+        msg = f"{e}"
+    return jsonify({"message": msg})
 
 
 def delete_dataframe(df_id):
-    pass
+    msg = ""
+    try:
+        df = DataFrame.query.filter_by(id=df_id).first()
+        if df:
+            db.session.delete(df)
+            db.session.commit()
+            msg = f"dataframe[{df_id}] was deleted."
+        else:
+            msg = f"dataframe[{df_id}] was not found."
+        return jsonify({"message": msg})
+    except Exception as e:
+        msg = f"{e}"
 
 
 def export_dataframe(export_params):

@@ -5,8 +5,9 @@ from flask import jsonify, url_for
 from flask_restx import marshal
 
 from metis_ai_services import db
-from metis_ai_services.api.dataset.dto import pagination_model
+from metis_ai_services.api.dataset.dto import dataset_model, pagination_model
 from metis_ai_services.models.dataset import DataSet
+from metis_ai_services.models.dataframe import DataFrame
 
 
 def process_add_dataset(ds_dict):
@@ -25,7 +26,11 @@ def process_add_dataset(ds_dict):
 
 # @token_required
 def retrieve_dataset(ds_id):
-    return DataSet.query.filter_by(id=ds_id).first_or_404(description=f"{ds_id} not found in database.")
+    ds_info = DataSet.query.filter_by(id=ds_id).first_or_404(description=f"{ds_id} not found in database.")
+    resp_data = marshal(ds_info, dataset_model)
+    dfs = DataFrame.query.filter_by(ds_id=ds_id).all()
+    resp_data["dataframes"] = [df.serialize for df in dfs]
+    return jsonify(resp_data)
 
 
 # @token_required
