@@ -1,9 +1,11 @@
 """Class definition for DataSet model."""
 from sqlalchemy import Column, String
-from metis_ai_services import db
+
+# from metis_ai_services import db
+from flask_sqlalchemy import Model
 
 
-class DataFrame(db.Model):
+class DataFrame(Model):
     """DataFrame model for a generic resource in a REST API."""
 
     __tablename__ = "dataframe"

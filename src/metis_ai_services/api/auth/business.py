@@ -4,7 +4,10 @@ from http import HTTPStatus
 from flask import current_app, jsonify
 from flask_restx import abort
 
-from metis_ai_services import db
+
+from flask_sqlalchemy import SQLAlchemy
+
+# from metis_ai_services import db
 from metis_ai_services.api.auth.decorators import token_required
 from metis_ai_services.models.token_blacklist import BlacklistedToken
 from metis_ai_services.models.user import User
@@ -12,6 +15,9 @@ from metis_ai_services.utils.datetime_util import (
     remaining_fromtimestamp,
     format_timespan_digits,
 )
+
+
+db = SQLAlchemy()
 
 
 def process_registration_request(email, password):

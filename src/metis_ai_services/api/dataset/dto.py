@@ -27,8 +27,11 @@ create_dataset_reqparser.add_argument(name="image_url", type=str, location="form
 search_dataset_reqparser = RequestParser(bundle_errors=True)
 search_dataset_reqparser.add_argument(name="keywords", type=str, location="form", required=True, nullable=False)
 
-update_dataset_reqparser = create_dataset_reqparser.copy()
-update_dataset_reqparser.remove_argument("ds_name")
+update_dataset_reqparser = RequestParser(bundle_errors=True)
+update_dataset_reqparser.add_argument(name="name", type=str, location="form", required=False, nullable=True)
+update_dataset_reqparser.add_argument(name="description", type=str, location="form", required=False, nullable=True)
+update_dataset_reqparser.add_argument(name="owner_id", type=str, location="form", required=False, nullable=True)
+update_dataset_reqparser.add_argument(name="image_url", type=str, location="form", required=False, nullable=True)
 
 pagination_reqparser = RequestParser(bundle_errors=True)
 pagination_reqparser.add_argument("page", type=positive, required=False, default=1)

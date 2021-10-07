@@ -2,7 +2,7 @@
 from flask import Blueprint
 from flask_restx import Api
 
-from metis_ai_services.api.auth.endpoints import auth_ns
+# from metis_ai_services.api.auth.endpoints import auth_ns
 
 # from metis_ai_services.api.widgets.endpoints import widget_ns
 
@@ -29,8 +29,6 @@ api = Api(
 #     description="MetisAI APIs",
 # )
 
-api.add_namespace(auth_ns, path="/auth")
-# api.add_namespace(widget_ns, path="/wigdet")
-
+# api.add_namespace(auth_ns, path="/auth")
 api.add_namespace(ns_dataset, path="/datasets")
 api.add_namespace(ns_dataframe, path="/dataframes")

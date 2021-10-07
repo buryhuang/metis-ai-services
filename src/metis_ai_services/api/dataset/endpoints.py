@@ -6,14 +6,14 @@ from metis_ai_services.api.dataset.business import (
     retrieve_dateset_list,
     # retrieve_mock_dateset_list,
     retrieve_dataset,
-    # update_dataset,
+    update_dataset,
     delete_dataset,
     search_datasets_by_keywords,
 )
 from metis_ai_services.api.dataset.dto import (
     create_dataset_reqparser,
     search_dataset_reqparser,
-    # update_dataset_reqparser,
+    update_dataset_reqparser,
     pagination_reqparser,
     dataset_model,
     pagination_model,
@@ -79,14 +79,13 @@ class DataSet(Resource):
         """Retrieve a dataset."""
         return retrieve_dataset(ds_id)
 
-    # @ns_dataset.response(int(HTTPStatus.OK), "Dataset was updated.", dataset_model)
-    # @ns_dataset.response(int(HTTPStatus.CREATED), "Added new widget.")
+    @ns_dataset.response(int(HTTPStatus.OK), "Dataset was updated.", dataset_model)
     # @ns_dataset.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
-    # @ns_dataset.expect(update_dataset_reqparser)
-    # def put(self, ds_id):
-    #     """Update a dataset."""
-    #     dataset_dict = update_dataset_reqparser.parse_args()
-    #     return update_dataset(dataset_dict)
+    @ns_dataset.expect(update_dataset_reqparser)
+    def put(self, ds_id):
+        """Update a dataset."""
+        dataset_params = update_dataset_reqparser.parse_args()
+        return update_dataset(ds_id, dataset_params)
 
     @ns_dataset.response(int(HTTPStatus.NO_CONTENT), "Dataset was deleted.")
     @ns_dataset.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")

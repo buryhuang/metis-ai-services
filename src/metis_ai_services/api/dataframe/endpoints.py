@@ -1,6 +1,6 @@
 """API endpoint definitions for /dataframes namespace."""
 from http import HTTPStatus
-
+from flask import jsonify
 from flask_restx import Namespace, Resource
 from metis_ai_services.api.dataframe.business import (
     process_add_dataframe,
@@ -8,14 +8,14 @@ from metis_ai_services.api.dataframe.business import (
     retrieve_dataframe,
     update_dataframe,
     delete_dataframe,
-    export_dataframe,
+    # export_dataframe,
     query_dataframe,
 )
 from metis_ai_services.api.dataframe.dto import (
     create_dataframe_reqparser,
-    retrieve_dataframe_reqparser,
-    update_dataset_reqparser,
-    export_dataframe_reqparser,
+    # retrieve_dataframe_reqparser,
+    update_dataframe_reqparser,
+    # export_dataframe_reqparser,
     query_dataframe_reqparser,
     dataframe_model,
 )
@@ -54,22 +54,26 @@ class DataFrame(Resource):
     """Handles HTTP requests to URL: /dataframes/{df_id}."""
 
     @ns_dataframe.response(int(HTTPStatus.OK), "Retrieved dataframe.", dataframe_model)
-    @ns_dataframe.marshal_with(dataframe_model)
+    # @ns_dataframe.marshal_with(dataframe_model)
     def get(self, df_id):
         """Retrieve a dataframe."""
-        return retrieve_dataframe(df_id)
+        df = retrieve_dataframe(df_id)
+        if df:
+            return jsonify(df)
+        else:
+            return "", HTTPStatus.NOT_FOUND
 
-    @ns_dataframe.response(int(HTTPStatus.OK), "Dataframe was updated.", dataframe_model)
-    @ns_dataframe.response(int(HTTPStatus.CREATED), "Added new widget.")
     # @ns_dataframe.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
-    @ns_dataframe.expect(update_dataset_reqparser)
+    # @ns_dataframe.response(int(HTTPStatus.OK), "Dataframe was updated.", dataframe_model)
+    # @ns_dataframe.response(int(HTTPStatus.CREATED), "Added new widget.")
+    @ns_dataframe.expect(update_dataframe_reqparser)
     def put(self, df_id):
         """Update a dataframe."""
-        df_params = update_dataset_reqparser.parse_args()
+        df_params = update_dataframe_reqparser.parse_args()
         return update_dataframe(df_id, df_params)
 
-    @ns_dataframe.response(int(HTTPStatus.NO_CONTENT), "Dataframe was deleted.")
     # @ns_dataframe.response(int(HTTPStatus.FORBIDDEN), "Administrator token required.")
+    @ns_dataframe.response(int(HTTPStatus.NO_CONTENT), "Dataframe was deleted.")
     def delete(self, df_id):
         """Delete a dataframe."""
         return delete_dataframe(df_id)
