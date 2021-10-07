@@ -178,6 +178,20 @@ def get_dataframe_by_id(df_id):
     return None
 
 
+def get_dataframe_by_dsid(ds_id):
+    dfs = None
+    dynamodb = get_dynamodb_resource()
+    try:
+        if dynamodb:
+            table = dynamodb.Table(DataFrame_TN)
+            if table:
+                resp = table.scan(FilterExpression=Attr("ds_id").eq(ds_id))
+                dfs = resp["Items"]
+    except Exception as e:
+        print(e)
+    return dfs
+
+
 def update_dataframe_by_id(df_id, df_params):
     result = {"status": "", "msg": ""}
     try:

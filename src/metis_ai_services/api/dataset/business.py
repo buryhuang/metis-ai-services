@@ -16,6 +16,7 @@ from metis_ai_services.utils.dynamodb_util import (
     get_dataset_by_id,
     delete_dataset_by_id,
     update_dataset_by_id,
+    get_dataframe_by_dsid,
 )
 
 
@@ -91,6 +92,8 @@ def retrieve_dataset(ds_id):
     # return jsonify(resp_data)
 
     dataset = get_dataset_by_id(ds_id)
+    dfs = get_dataframe_by_dsid(ds_id)
+    dataset["dataframes"] = dfs
     return jsonify(dataset)
 
 
