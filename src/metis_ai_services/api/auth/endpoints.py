@@ -7,12 +7,12 @@ from metis_ai_services.api.auth.dto import auth_reqparser, user_model
 from metis_ai_services.api.auth.business import (
     process_registration_request,
     process_login_request,
-    get_logged_in_user,
     process_logout_request,
+    # get_logged_in_user,
 )
 
 auth_ns = Namespace(name="auth", validate=True)
-auth_ns.models[user_model.name] = user_model
+# auth_ns.models[user_model.name] = user_model
 
 
 @auth_ns.route("/register", endpoint="auth_register")
@@ -49,18 +49,18 @@ class LoginUser(Resource):
         return process_login_request(email, password)
 
 
-@auth_ns.route("/user", endpoint="auth_user")
-class GetUser(Resource):
-    """Handles HTTP requests to URL: /api/v1/auth/user."""
+# @auth_ns.route("/user", endpoint="auth_user")
+# class GetUser(Resource):
+#     """Handles HTTP requests to URL: /api/v1/auth/user."""
 
-    @auth_ns.doc(security="Bearer")
-    @auth_ns.response(int(HTTPStatus.OK), "Token is currently valid.", user_model)
-    @auth_ns.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
-    @auth_ns.response(int(HTTPStatus.UNAUTHORIZED), "Token is invalid or expired.")
-    @auth_ns.marshal_with(user_model)
-    def get(self):
-        """Validate access token and return user info."""
-        return get_logged_in_user()
+#     @auth_ns.doc(security="Bearer")
+#     @auth_ns.response(int(HTTPStatus.OK), "Token is currently valid.", user_model)
+#     @auth_ns.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
+#     @auth_ns.response(int(HTTPStatus.UNAUTHORIZED), "Token is invalid or expired.")
+#     @auth_ns.marshal_with(user_model)
+#     def get(self):
+#         """Validate access token and return user info."""
+#         return get_logged_in_user()
 
 
 @auth_ns.route("/logout", endpoint="auth_logout")

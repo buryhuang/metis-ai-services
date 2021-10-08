@@ -1,8 +1,8 @@
 """Custom HTTPException classes that extend werkzeug.exceptions."""
 from werkzeug.exceptions import Unauthorized, Forbidden
 
-_REALM_REGULAR_USERS = "registered_users@mydomain.com"
-_REALM_ADMIN_USERS = "admin_users@mydomain.com"
+_REALM_REGULAR_USERS = "registered_users@metisai.com"
+_REALM_ADMIN_USERS = "admin_users@metisai.com"
 
 
 class ApiUnauthorized(Unauthorized):

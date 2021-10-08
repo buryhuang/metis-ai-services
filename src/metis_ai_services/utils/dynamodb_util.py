@@ -1,10 +1,13 @@
 import boto3
+import hashlib
 from boto3.dynamodb.conditions import Key, Attr
 
 # from metis_ai_services.api import dataframe
 
 DataSet_TN = "DataSet"
 DataFrame_TN = "DataFrame"
+User_TN = "User"
+UserSession_TN = "UserSession"
 
 AWS_ACCESS_KEY_ID = "AKIAQWNS2AWMWMXEPS3Q"
 AWS_SECRET_ACCESS_KEY = "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"
@@ -53,6 +56,10 @@ def init_dynamo_db():
                 _create_dataset_tbl(dynamodb)
             if DataFrame_TN not in existing_tables:
                 _create_dataframe_tbl(dynamodb)
+            if User_TN not in existing_tables:
+                _create_user_tbl(dynamodb)
+            if UserSession_TN not in existing_tables:
+                _create_user_session_tbl(dynamodb)
     except Exception as e:
         print(e)
 
@@ -109,13 +116,135 @@ def _create_dataframe_tbl(dynamodb):
     )
 
 
-#   {
-#     "id": "c8958e0b-f682-4b1e-bacc-b337cba76122",
-#     "name": "police-killing-ds",
-#     "description": "police killing dataframe",
-#     "ds_id": "31d150cb-142e-4b18-a292-67c513c64747",
-#     "uri": "s3://metisai-api-data/police_killings.csv"
-#   },
+def _create_user_tbl(dynamodb):
+    dynamodb.create_table(
+        AttributeDefinitions=[
+            {
+                "AttributeName": "email",
+                "AttributeType": "S",
+            }
+        ],
+        KeySchema=[
+            {
+                "AttributeName": "email",
+                "KeyType": "HASH",
+            }
+        ],
+        ProvisionedThroughput={
+            "ReadCapacityUnits": 5,
+            "WriteCapacityUnits": 5,
+        },
+        TableName=User_TN,
+    )
+
+
+def _create_user_session_tbl(dynamodb):
+    dynamodb.create_table(
+        AttributeDefinitions=[
+            {
+                "AttributeName": "token",
+                "AttributeType": "B",
+            }
+        ],
+        KeySchema=[
+            {
+                "AttributeName": "token",
+                "KeyType": "HASH",
+            }
+        ],
+        ProvisionedThroughput={
+            "ReadCapacityUnits": 5,
+            "WriteCapacityUnits": 5,
+        },
+        TableName=UserSession_TN,
+    )
+
+
+def find_user(email):
+    try:
+        dynamodb = get_dynamodb_resource()
+        table = dynamodb.Table(User_TN)
+        resp = table.query(KeyConditionExpression=Key("email").eq(email))
+        if len(resp["Items"]) == 1:
+            return resp["Items"][0]
+    except Exception as e:
+        print(e)
+    return None
+
+
+def check_password(email, password):
+    try:
+        dynamodb = get_dynamodb_resource()
+        table = dynamodb.Table(User_TN)
+        resp = table.query(KeyConditionExpression=Key("email").eq(email))
+        if len(resp["Items"]) == 0:
+            return False
+        user_info = resp["Items"][0]
+        if user_info["password"] == hashlib.pbkdf2_hmac("sha256", str.encode(password), b"salt", 100000).hex():
+            return True
+    except Exception as e:
+        print(e)
+    return False
+
+
+def register_user(email, password, user_public_id):
+    result = {"status": "failed", "msg": ""}
+    print(password)
+    try:
+        dynamodb = get_dynamodb_resource()
+        table = dynamodb.Table(User_TN)
+        if not find_user(email):
+            table.put_item(
+                Item={
+                    "email": email,
+                    "password": hashlib.pbkdf2_hmac("sha256", str.encode(password), b"salt", 100000).hex(),
+                    "public_id": user_public_id,
+                }
+            )
+            result["status"] = "success"
+            result["msg"] = f"User({email}) have been added."
+        else:
+            result["msg"] = f"User({email}) exists."
+    except Exception as e:
+        result["msg"] = str(e)
+
+    return result
+
+
+def add_token(token):
+    try:
+        dynamodb = get_dynamodb_resource()
+        table = dynamodb.Table(UserSession_TN)
+        table.delete_item(Key={"token": token})
+        resp = table.put_item(Item={"token": token})
+        if resp["ResponseMetadata"]["HTTPStatusCode"] == 200:
+            return True
+    except Exception as e:
+        print(e)
+    return False
+
+
+def check_token(token):
+    try:
+        dynamodb = get_dynamodb_resource()
+        table = dynamodb.Table(UserSession_TN)
+        resp = table.query(KeyConditionExpression=Key("token").eq(str.encode(token)))
+        if len(resp["Items"]) > 0:
+            return True
+    except Exception as e:
+        print(f"check_token:{e}")
+    return False
+
+
+def remove_token(token):
+    try:
+        dynamodb = get_dynamodb_resource()
+        table = dynamodb.Table(UserSession_TN)
+        table.delete_item(Key={"token": str.encode(token)})
+    except Exception as e:
+        print(f"remove_token:{e}")
+
+
 def add_dataframe(df_params):
     result = {"status": "failed", "msg": ""}
     try:
