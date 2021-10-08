@@ -1,9 +1,7 @@
 """API endpoint definitions for /auth namespace."""
 from http import HTTPStatus
-
 from flask_restx import Namespace, Resource
-
-from metis_ai_services.api.auth.dto import auth_reqparser, user_model
+from metis_ai_services.api.auth.dto import auth_reqparser
 from metis_ai_services.api.auth.business import (
     process_registration_request,
     process_login_request,

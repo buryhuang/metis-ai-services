@@ -8,7 +8,6 @@ from flask_cors import CORS
 
 # from sqlalchemy import create_engine
 from metis_ai_services.config import get_config
-
 from metis_ai_services.utils.dynamodb_util import init_dynamo_db
 
 # cors = CORS()
@@ -26,15 +25,13 @@ def create_app(config_name):
 
     app.register_blueprint(api_bp)
     # cors.init_app(app, resources={r"/*": {"origins": "*"}})
-    CORS(app, resources=r"/*")
+    CORS(app, resources={r"/*": {"origins": "*"}})
     bcrypt.init_app(app)
 
     # db.init_app(app)
     # migrate.init_app(app, db)
     # init_sqlite_db(app.config)
-    print("init dynamodb ...")
     init_dynamo_db()
-    print("init dynamodb Done.")
     return app
 
 

@@ -3,14 +3,11 @@ from http import HTTPStatus
 from flask import current_app, jsonify
 from uuid import uuid4
 from flask_restx import abort
-
-
 from metis_ai_services.utils.dynamodb_util import (
     find_user,
     check_password,
     register_user,
     add_token,
-    check_token,
     remove_token,
 )
 
