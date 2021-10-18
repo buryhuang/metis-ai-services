@@ -26,9 +26,10 @@ class RegisterUser(Resource):
         """Register a new user and return an access token."""
         request_data = auth_reqparser.parse_args()
         email = request_data.get("email")
+        name = "No Boby" if request_data.get("name") is None else request_data.get("name")
         password = "$$$NOTPROVIDED$$$"
         # password = user_pw if request_data.get("password") is not None else '$$$NOTPROVIDED$$$'
-        return process_registration_request(email, password)
+        return process_registration_request(name, email, password)
 
 
 @auth_ns.route("/login", endpoint="auth_login")
