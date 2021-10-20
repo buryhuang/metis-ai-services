@@ -189,7 +189,7 @@ def check_password(email, password):
     return False
 
 
-def register_user(email, password, name, user_public_id):
+def register_user(email, password, name, user_public_id, message):
     result = {"status": "failed", "msg": ""}
     print(password)
     try:
@@ -202,6 +202,7 @@ def register_user(email, password, name, user_public_id):
                     "name": name,
                     "password": hashlib.pbkdf2_hmac("sha256", str.encode(password), b"salt", 100000).hex(),
                     "public_id": user_public_id,
+                    "message": message,
                 }
             )
             result["status"] = "success"
