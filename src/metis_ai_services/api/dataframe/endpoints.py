@@ -96,15 +96,16 @@ class DataFrame(Resource):
 #         return export_dataframe(export_params)
 
 
-@ns_dataframe.route("/<df_id>/query", endpoint="df_query")
+@ns_dataframe.route("/query", endpoint="df_query")
 class DataFrameQuery(Resource):
     """Handles HTTP requests to URL: /dataframes/query."""
 
     @ns_dataframe.expect(query_dataframe_reqparser)
     @ns_dataframe.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
     @ns_dataframe.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Interal server error.")
-    def post(self, df_id):
+    def get(self):
         """query on a dataframe."""
         request_data = query_dataframe_reqparser.parse_args()
+        df_id = request_data.get("df_id")
         select_sql_stmt = request_data.get("select_sql_stmt")
         return query_dataframe(df_id, select_sql_stmt)
