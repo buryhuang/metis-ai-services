@@ -22,7 +22,8 @@ def get_s3_df(uri):
     return None
 
 
-def exec_select_stmt(uri, select_sql_stmt):
+def exec_select_stmt(df_name, uri, select_sql_stmt):
     df = get_s3_df(uri)
+    select_sql_stmt = select_sql_stmt.replace(df_name, "df")
     result = pdsql.sqldf(select_sql_stmt)
     return result.to_json(orient="records")

@@ -89,5 +89,5 @@ def query_dataframe(df_id, select_sql_stmt):
     # return jsonify({"message": f"DataFrame[ID:{df_id}] not found in database."})
     df = get_dataframe_by_id(df_id)
     if df is not None:
-        return exec_select_stmt(df["uri"], select_sql_stmt)
+        return exec_select_stmt(df["name"], df["uri"], select_sql_stmt)
     return jsonify({"message": f"DataFrame[ID:{df_id}] not found in database."})
