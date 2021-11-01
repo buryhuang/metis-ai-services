@@ -1,9 +1,7 @@
 """API endpoint definitions for /auth namespace."""
 from http import HTTPStatus
-
 from flask_restx import Namespace, Resource
-
-from metis_ai_services.api.auth.dto import auth_reqparser, user_model
+from metis_ai_services.api.auth.dto import auth_reqparser
 from metis_ai_services.api.auth.business import (
     process_registration_request,
     process_login_request,
@@ -28,8 +26,11 @@ class RegisterUser(Resource):
         """Register a new user and return an access token."""
         request_data = auth_reqparser.parse_args()
         email = request_data.get("email")
-        password = request_data.get("password")
-        return process_registration_request(email, password)
+        name = "" if request_data.get("name") is None else request_data.get("name")
+        message = "" if request_data.get("message") is None else request_data.get("message")
+        password = "$$$NOTPROVIDED$$$"
+        # password = user_pw if request_data.get("password") is not None else '$$$NOTPROVIDED$$$'
+        return process_registration_request(name, message, email, password)
 
 
 @auth_ns.route("/login", endpoint="auth_login")

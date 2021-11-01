@@ -46,9 +46,7 @@ class ProductionConfig(Config):
     PRESERVE_CONTEXT_ON_EXCEPTION = True
 
 
-ENV_CONFIG_DICT = dict(
-    development=DevelopmentConfig, testing=TestingConfig, production=ProductionConfig
-)
+ENV_CONFIG_DICT = dict(development=DevelopmentConfig, testing=TestingConfig, production=ProductionConfig)
 
 
 def get_config(config_name):

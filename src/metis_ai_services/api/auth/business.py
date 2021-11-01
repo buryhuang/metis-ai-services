@@ -3,14 +3,11 @@ from http import HTTPStatus
 from flask import current_app, jsonify
 from uuid import uuid4
 from flask_restx import abort
-
-
 from metis_ai_services.utils.dynamodb_util import (
     find_user,
     check_password,
     register_user,
     add_token,
-    check_token,
     remove_token,
 )
 
@@ -29,7 +26,7 @@ from metis_ai_services.api.auth.decorators import token_required, encode_access_
 # db = SQLAlchemy()
 
 
-def process_registration_request(email, password):
+def process_registration_request(name, message, email, password):
     # if User.find_by_email(email):
     #     abort(HTTPStatus.CONFLICT, f"{email} is already registered", status="fail")
     # new_user = User(email=email, password=password)
@@ -45,7 +42,7 @@ def process_registration_request(email, password):
         abort(HTTPStatus.CONFLICT, f"{email} is already registered", status="fail")
 
     new_user_public_id = str(uuid4())
-    result = register_user(email, password, new_user_public_id)
+    result = register_user(email, password, name, new_user_public_id, message)
     if result["status"] == "success":
         access_token = encode_access_token(new_user_public_id)
         return _create_auth_successful_response(

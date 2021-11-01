@@ -48,9 +48,9 @@ def init_dynamo_db():
         dynamodb = get_dynamodb_client()
         if dynamodb:
             existing_tables = dynamodb.list_tables()["TableNames"]
-            print(f"existing_tables: {existing_tables}")
-            for existing_table in existing_tables:
-                print(existing_table)
+            # print(f"existing_tables: {existing_tables}")
+            # for existing_table in existing_tables:
+            #     print(existing_table)
 
             if DataSet_TN not in existing_tables:
                 _create_dataset_tbl(dynamodb)
@@ -165,6 +165,7 @@ def find_user(email):
         dynamodb = get_dynamodb_resource()
         table = dynamodb.Table(User_TN)
         resp = table.query(KeyConditionExpression=Key("email").eq(email))
+        print(f"find_user:{resp}")
         if len(resp["Items"]) == 1:
             return resp["Items"][0]
     except Exception as e:
@@ -180,6 +181,7 @@ def check_password(email, password):
         if len(resp["Items"]) == 0:
             return False
         user_info = resp["Items"][0]
+        print(f"check_password:{user_info}")
         if user_info["password"] == hashlib.pbkdf2_hmac("sha256", str.encode(password), b"salt", 100000).hex():
             return True
     except Exception as e:
@@ -187,7 +189,7 @@ def check_password(email, password):
     return False
 
 
-def register_user(email, password, user_public_id):
+def register_user(email, password, name, user_public_id, message):
     result = {"status": "failed", "msg": ""}
     print(password)
     try:
@@ -197,8 +199,10 @@ def register_user(email, password, user_public_id):
             table.put_item(
                 Item={
                     "email": email,
+                    "name": name,
                     "password": hashlib.pbkdf2_hmac("sha256", str.encode(password), b"salt", 100000).hex(),
                     "public_id": user_public_id,
+                    "message": message,
                 }
             )
             result["status"] = "success"

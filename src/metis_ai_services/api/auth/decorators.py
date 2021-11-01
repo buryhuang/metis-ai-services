@@ -1,10 +1,8 @@
 """Decorators that decode and verify authorization tokens."""
-import jwt
+from jose import jwt
 from functools import wraps
 from datetime import datetime, timezone, timedelta
-from flask import request
-from flask import current_app
-
+from flask import request, current_app
 from metis_ai_services.utils.result import Result
 from metis_ai_services.api.exceptions import ApiUnauthorized, ApiForbidden
 from metis_ai_services.utils.dynamodb_util import check_token
@@ -21,7 +19,9 @@ def encode_access_token(public_id):
         expire = now + timedelta(seconds=5)
     payload = dict(exp=expire, iat=now, sub=public_id)
     key = current_app.config.get("SECRET_KEY")
-    return jwt.encode(payload, key, algorithm="HS256").encode("UTF-8")
+    access_token = jwt.encode(payload, key, algorithm="HS256").encode("UTF-8")
+    print(type(access_token), access_token)
+    return access_token
 
 
 def token_required(f):
@@ -76,11 +76,8 @@ def decode_access_token(access_token):
     try:
         key = current_app.config.get("SECRET_KEY")
         payload = jwt.decode(access_token, key, algorithms=["HS256"])
-    except jwt.ExpiredSignatureError:
-        error = "Access token expired. Please log in again."
-        return Result.Fail(error)
-    except jwt.InvalidTokenError:
-        error = "Invalid token. Please log in again."
+    except Exception as e:
+        error = str(e)
         return Result.Fail(error)
 
     # if BlacklistedToken.check_blacklist(access_token):

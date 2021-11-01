@@ -36,7 +36,10 @@ update_dataframe_reqparser.add_argument(name="description", type=str, location="
 export_dataframe_reqparser = RequestParser(bundle_errors=True)
 # TODO: query_dataframe_reqparser
 query_dataframe_reqparser = RequestParser(bundle_errors=True)
-query_dataframe_reqparser.add_argument(name="select_sql_stmt", type=str, location="form", required=True, nullable=False)
+query_dataframe_reqparser.add_argument("df_id", type=str, required=True)
+query_dataframe_reqparser.add_argument("select_sql_stmt", type=str, required=True)
+# query_dataframe_reqparser.add_argument(name="df_id", type=str, location="form", required=True, nullable=False)
+# query_dataframe_reqparser.add_argument(name="select_sql_stmt", type=str, location="form", required=True, nullable=False)
 
 dataframe_model = Model(
     "DataFrame",

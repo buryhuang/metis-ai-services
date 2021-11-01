@@ -2,9 +2,7 @@
 from pathlib import Path
 from setuptools import setup, find_packages
 
-DESCRIPTION = (
-    "Boilerplate Flask API with Flask-RESTx, SQLAlchemy, pytest, flake8, " "tox configured"
-)
+DESCRIPTION = "Boilerplate Flask API with Flask-RESTx, SQLAlchemy, pytest, flake8, " "tox configured"
 APP_ROOT = Path(__file__).parent
 README = (APP_ROOT / "README.md").read_text()
 AUTHOR = "Metis AI Services"
@@ -21,6 +19,8 @@ INSTALL_REQUIRES = [
     "Flask-Migrate",
     "flask-restx",
     "Flask-SQLAlchemy",
+    "pandas",
+    "pandasql",
     "PyJWT",
     "python-dateutil",
     "python-dotenv",
