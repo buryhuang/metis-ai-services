@@ -423,6 +423,7 @@ def delete_dataset_by_id(ds_id):
 
 
 def update_dataset_by_id(ds_id, ds_params):
+    
     result = {"status": "", "msg": ""}
     try:
         dynamodb = get_dynamodb_resource()
@@ -430,10 +431,15 @@ def update_dataset_by_id(ds_id, ds_params):
         resp = table.query(KeyConditionExpression=Key("id").eq(ds_id))
         if len(resp["Items"]) > 0:
             dataset = resp["Items"][0]
+            #table.delete_item(Key={"id":ds_id})
+            #delete_dataset_by_id(ds_id)
+            #print(ds_params.items())
             for k, v in ds_params.items():
-                if v:
+                if k != "id" and k != "owner_id":
+                    response = table.update_item(Key={"id": dataset["id"], "owner_id": dataset["owner_id"]}, AttributeUpdates={k:{'Value':v, 'Action':'PUT'}})
+                    #print(v, response)
                     dataset[k] = v
-            table.put_item(Item=dataset)
+            #print(dataset)
             result["status"] = "success"
             result["msg"] = f"dataset({ds_id}) has been updated."
         else:
@@ -442,4 +448,6 @@ def update_dataset_by_id(ds_id, ds_params):
     except Exception as e:
         result["status"] = "failed"
         result["msg"] = str(e)
+    #print(result)
     return result
+   
