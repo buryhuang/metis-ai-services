@@ -1,13 +1,13 @@
+import os
 import boto3
 import hashlib
 from boto3.dynamodb.conditions import Key, Attr
 
-# from metis_ai_services.api import dataframe
+from metis_ai_services.config import init_db_config
 
-DataSet_TN = "DataSet"
-DataFrame_TN = "DataFrame"
-User_TN = "User"
-UserSession_TN = "UserSession"
+
+db_cfg = init_db_config(os.getenv("FLASK_ENV", "devp"))
+
 
 AWS_ACCESS_KEY_ID = "AKIAQWNS2AWMWMXEPS3Q"
 AWS_SECRET_ACCESS_KEY = "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"
@@ -52,13 +52,13 @@ def init_dynamo_db():
             # for existing_table in existing_tables:
             #     print(existing_table)
 
-            if DataSet_TN not in existing_tables:
+            if db_cfg.DataSet_TN not in existing_tables:
                 _create_dataset_tbl(dynamodb)
-            if DataFrame_TN not in existing_tables:
+            if db_cfg.DataFrame_TN not in existing_tables:
                 _create_dataframe_tbl(dynamodb)
-            if User_TN not in existing_tables:
+            if db_cfg.User_TN not in existing_tables:
                 _create_user_tbl(dynamodb)
-            if UserSession_TN not in existing_tables:
+            if db_cfg.UserSession_TN not in existing_tables:
                 _create_user_session_tbl(dynamodb)
     except Exception as e:
         print(e)
@@ -90,7 +90,7 @@ def _create_dataset_tbl(dynamodb):
             "ReadCapacityUnits": 5,
             "WriteCapacityUnits": 5,
         },
-        TableName=DataSet_TN,
+        TableName=db_cfg.DataSet_TN,
     )
 
 
@@ -112,7 +112,7 @@ def _create_dataframe_tbl(dynamodb):
             "ReadCapacityUnits": 5,
             "WriteCapacityUnits": 5,
         },
-        TableName=DataFrame_TN,
+        TableName=db_cfg.DataFrame_TN,
     )
 
 
@@ -134,7 +134,7 @@ def _create_user_tbl(dynamodb):
             "ReadCapacityUnits": 5,
             "WriteCapacityUnits": 5,
         },
-        TableName=User_TN,
+        TableName=db_cfg.User_TN,
     )
 
 
@@ -156,14 +156,14 @@ def _create_user_session_tbl(dynamodb):
             "ReadCapacityUnits": 5,
             "WriteCapacityUnits": 5,
         },
-        TableName=UserSession_TN,
+        TableName=db_cfg.UserSession_TN,
     )
 
 
 def find_user(email):
     try:
         dynamodb = get_dynamodb_resource()
-        table = dynamodb.Table(User_TN)
+        table = dynamodb.Table(db_cfg.User_TN)
         resp = table.query(KeyConditionExpression=Key("email").eq(email))
         print(f"find_user:{resp}")
         if len(resp["Items"]) == 1:
@@ -176,7 +176,7 @@ def find_user(email):
 def check_password(email, password):
     try:
         dynamodb = get_dynamodb_resource()
-        table = dynamodb.Table(User_TN)
+        table = dynamodb.Table(db_cfg.User_TN)
         resp = table.query(KeyConditionExpression=Key("email").eq(email))
         if len(resp["Items"]) == 0:
             return False
@@ -194,7 +194,7 @@ def register_user(email, password, name, user_public_id, message):
     print(password)
     try:
         dynamodb = get_dynamodb_resource()
-        table = dynamodb.Table(User_TN)
+        table = dynamodb.Table(db_cfg.User_TN)
         if not find_user(email):
             table.put_item(
                 Item={
@@ -218,7 +218,7 @@ def register_user(email, password, name, user_public_id, message):
 def add_token(token):
     try:
         dynamodb = get_dynamodb_resource()
-        table = dynamodb.Table(UserSession_TN)
+        table = dynamodb.Table(db_cfg.UserSession_TN)
         table.delete_item(Key={"token": token})
         resp = table.put_item(Item={"token": token})
         if resp["ResponseMetadata"]["HTTPStatusCode"] == 200:
@@ -231,7 +231,7 @@ def add_token(token):
 def check_token(token):
     try:
         dynamodb = get_dynamodb_resource()
-        table = dynamodb.Table(UserSession_TN)
+        table = dynamodb.Table(db_cfg.UserSession_TN)
         resp = table.query(KeyConditionExpression=Key("token").eq(str.encode(token)))
         if len(resp["Items"]) > 0:
             return True
@@ -243,7 +243,7 @@ def check_token(token):
 def remove_token(token):
     try:
         dynamodb = get_dynamodb_resource()
-        table = dynamodb.Table(UserSession_TN)
+        table = dynamodb.Table(db_cfg.UserSession_TN)
         table.delete_item(Key={"token": str.encode(token)})
     except Exception as e:
         print(f"remove_token:{e}")
@@ -253,7 +253,7 @@ def add_dataframe(df_params):
     result = {"status": "failed", "msg": ""}
     try:
         dynamodb = get_dynamodb_resource()
-        table = dynamodb.Table(DataFrame_TN)
+        table = dynamodb.Table(db_cfg.DataFrame_TN)
         df_name = df_params["name"]
         resp = table.scan(FilterExpression=Attr("name").eq(df_name))
         if len(resp["Items"]) == 0:
@@ -272,7 +272,7 @@ def get_all_dataframes():
     dataframes = []
     try:
         dynamodb = get_dynamodb_resource()
-        table = dynamodb.Table(DataFrame_TN)
+        table = dynamodb.Table(db_cfg.DataFrame_TN)
         resp = table.scan()
         dataframes = resp["Items"]
     except Exception as e:
@@ -284,7 +284,7 @@ def delete_dataframe_by_id(df_id):
     result = {"status": "failed", "msg": ""}
     try:
         dynamodb = get_dynamodb_resource()
-        table = dynamodb.Table(DataFrame_TN)
+        table = dynamodb.Table(db_cfg.DataFrame_TN)
         resp = table.query(KeyConditionExpression=Key("id").eq(df_id))
         if len(resp["Items"]) > 0:
             df = resp["Items"][0]
@@ -301,7 +301,7 @@ def delete_dataframe_by_id(df_id):
 def get_dataframe_by_id(df_id):
     try:
         dynamodb = get_dynamodb_resource()
-        table = dynamodb.Table(DataFrame_TN)
+        table = dynamodb.Table(db_cfg.DataFrame_TN)
         resp = table.query(KeyConditionExpression=Key("id").eq(df_id))
         if len(resp["Items"]) > 0:
             df = resp["Items"][0]
@@ -316,7 +316,7 @@ def get_dataframe_by_dsid(ds_id):
     dynamodb = get_dynamodb_resource()
     try:
         if dynamodb:
-            table = dynamodb.Table(DataFrame_TN)
+            table = dynamodb.Table(db_cfg.DataFrame_TN)
             if table:
                 resp = table.scan(FilterExpression=Attr("ds_id").eq(ds_id))
                 dfs = resp["Items"]
@@ -329,7 +329,7 @@ def update_dataframe_by_id(df_id, df_params):
     result = {"status": "", "msg": ""}
     try:
         dynamodb = get_dynamodb_resource()
-        table = dynamodb.Table(DataFrame_TN)
+        table = dynamodb.Table(db_cfg.DataFrame_TN)
         resp = table.query(KeyConditionExpression=Key("id").eq(df_id))
         if len(resp["Items"]) > 0:
             df = resp["Items"][0]
@@ -353,7 +353,7 @@ def add_dataset(ds_params):
     if dynamodb:
         try:
             resp = dynamodb.put_item(
-                TableName=DataSet_TN,
+                TableName=db_cfg.DataSet_TN,
                 Item={
                     "id": {"S": ds_params["id"]},
                     "owner_id": {"S": ds_params["owner_id"]},
@@ -372,7 +372,7 @@ def get_all_datasets():
     dynamodb = get_dynamodb_resource()
     try:
         if dynamodb:
-            table = dynamodb.Table(DataSet_TN)
+            table = dynamodb.Table(db_cfg.DataSet_TN)
             if table:
                 resp = table.scan()
                 datasets = resp["Items"]
@@ -385,7 +385,7 @@ def search_datasets(keywords):
     datasets = []
     try:
         dynamodb = get_dynamodb_resource()
-        table = dynamodb.Table(DataSet_TN)
+        table = dynamodb.Table(db_cfg.DataSet_TN)
         resp = table.scan(FilterExpression=Attr("name").contains(keywords) | Attr("description").contains(keywords))
         datasets = resp["Items"]
     except Exception as e:
@@ -398,7 +398,7 @@ def get_dataset_by_id(ds_id):
     dynamodb = get_dynamodb_resource()
     try:
         if dynamodb:
-            table = dynamodb.Table(DataSet_TN)
+            table = dynamodb.Table(db_cfg.DataSet_TN)
             if table:
                 resp = table.query(KeyConditionExpression=Key("id").eq(ds_id))
                 dataset = resp["Items"][0]
@@ -411,7 +411,7 @@ def delete_dataset_by_id(ds_id):
     deleted = False
     try:
         dynamodb = get_dynamodb_resource()
-        table = dynamodb.Table(DataSet_TN)
+        table = dynamodb.Table(db_cfg.DataSet_TN)
         resp = table.query(KeyConditionExpression=Key("id").eq(ds_id))
         if len(resp["Items"]) > 0:
             dataset = resp["Items"][0]
@@ -426,7 +426,7 @@ def update_dataset_by_id(ds_id, ds_params):
     result = {"status": "", "msg": ""}
     try:
         dynamodb = get_dynamodb_resource()
-        table = dynamodb.Table(DataSet_TN)
+        table = dynamodb.Table(db_cfg.DataSet_TN)
         resp = table.query(KeyConditionExpression=Key("id").eq(ds_id))
         if len(resp["Items"]) > 0:
             dataset = resp["Items"][0]

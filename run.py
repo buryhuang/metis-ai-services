@@ -9,8 +9,8 @@ from metis_ai_services import create_app
 # from metis_ai_services.models.user import User
 # from metis_ai_services.models.dataset import DataSet
 
-app = create_app(os.getenv("FLASK_ENV", "development"))
-
+# !!! the env variable {FLASK_ENV} can be located at "./.env"
+app = create_app(os.getenv("FLASK_ENV", "devp"))
 
 # @app.shell_context_processor
 # def shell():
