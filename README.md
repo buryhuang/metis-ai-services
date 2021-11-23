@@ -2,7 +2,7 @@
 
 ## Local Development Setup
 
-1. intall python
+1. install python
 
 2. clone or download the repo
 
