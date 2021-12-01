@@ -43,24 +43,12 @@ class TestingConfig(Config):
     TESTING = True
     # SQLALCHEMY_DATABASE_URI = SQLITE_TEST
 
-    # DynamoDB Config
-    DataSet_TN = "DataSet_TEST"
-    DataFrame_TN = "DataFrame_TEST"
-    User_TN = "User_TEST"
-    UserSession_TN = "UserSession_TEST"
-
 
 class DevelopmentConfig(Config):
     """Development configuration."""
 
     TOKEN_EXPIRE_MINUTES = 15
     # SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", SQLITE_DEV)
-
-    # DynamoDB Config
-    DataSet_TN = "DataSet_DEV"
-    DataFrame_TN = "DataFrame_DEV"
-    User_TN = "User_DEV"
-    UserSession_TN = "UserSession_DEV"
 
 
 class ProductionConfig(Config):
@@ -70,12 +58,6 @@ class ProductionConfig(Config):
     BCRYPT_LOG_ROUNDS = 13
     # SQLALCHEMY_DATABASE_URI = os.getenv("DATABASE_URL", SQLITE_PROD)
     PRESERVE_CONTEXT_ON_EXCEPTION = True
-
-    # DynamoDB Config
-    DataSet_TN = "DataSet"
-    DataFrame_TN = "DataFrame"
-    User_TN = "User"
-    UserSession_TN = "UserSession"
 
 
 ENV_CONFIG_DICT = dict(devp=DevelopmentConfig, test=TestingConfig, prod=ProductionConfig)
