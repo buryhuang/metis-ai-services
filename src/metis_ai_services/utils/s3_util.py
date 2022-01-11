@@ -27,3 +27,12 @@ def exec_select_stmt(df_name, uri, select_sql_stmt):
     select_sql_stmt = select_sql_stmt.replace(df_name, "df")
     result = pdsql.sqldf(select_sql_stmt)
     return result.to_json(orient="records")
+
+def exec_select_stmt_2(df_name, uri, select_sql_stmt):
+    df = get_s3_df(uri)
+    select_sql_stmt = select_sql_stmt.replace(df_name, "df")
+    query_result = pdsql.sqldf(select_sql_stmt)
+    columns_list = query_result.columns.values.tolist()
+    result = [columns_list]
+    result.extend(query_result.values.tolist())
+    return result

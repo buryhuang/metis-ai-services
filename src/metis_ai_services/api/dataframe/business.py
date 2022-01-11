@@ -3,9 +3,10 @@ from http import HTTPStatus
 from uuid import uuid4
 from flask import jsonify
 
+
 # from metis_ai_services import db
 # from metis_ai_services.models.dataframe import DataFrame
-from metis_ai_services.utils.s3_util import exec_select_stmt
+from metis_ai_services.utils.s3_util import exec_select_stmt, exec_select_stmt_2
 from metis_ai_services.utils.dynamodb_util import (
     add_dataframe,
     get_all_dataframes,
@@ -91,3 +92,11 @@ def query_dataframe(df_id, select_sql_stmt):
     if df is not None:
         return exec_select_stmt(df["name"], df["uri"], select_sql_stmt)
     return jsonify({"message": f"DataFrame[ID:{df_id}] not found in database."})
+
+
+def download_dataframe(df_id, select_sql_stmt):
+    df = get_dataframe_by_id(df_id)
+    if df is not None:
+        return exec_select_stmt_2(df["name"], df["uri"], select_sql_stmt)
+    return []
+

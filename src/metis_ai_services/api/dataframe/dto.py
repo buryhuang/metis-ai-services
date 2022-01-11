@@ -41,6 +41,12 @@ query_dataframe_reqparser.add_argument("select_sql_stmt", type=str, required=Tru
 # query_dataframe_reqparser.add_argument(name="df_id", type=str, location="form", required=True, nullable=False)
 # query_dataframe_reqparser.add_argument(name="select_sql_stmt", type=str, location="form", required=True, nullable=False)
 
+
+download_dataframe_reqparser = RequestParser(bundle_errors=True)
+download_dataframe_reqparser.add_argument(name="df_id", type=str, location="form", required=True)
+download_dataframe_reqparser.add_argument(name="select_sql_stmt", type=str, location="form", required=True)
+download_dataframe_reqparser.add_argument(name="download", type=str, location="form", required=True)
+
 dataframe_model = Model(
     "DataFrame",
     {"id": String, "name": String, "uri": String, "ds_id": String, "description": String},

@@ -2,6 +2,9 @@
 from http import HTTPStatus
 from flask import jsonify
 from flask_restx import Namespace, Resource
+from io import StringIO
+import csv
+from flask import make_response
 from metis_ai_services.api.dataframe.business import (
     process_add_dataframe,
     retrieve_dataframe_list,
@@ -10,6 +13,7 @@ from metis_ai_services.api.dataframe.business import (
     delete_dataframe,
     # export_dataframe,
     query_dataframe,
+    download_dataframe,
 )
 from metis_ai_services.api.dataframe.dto import (
     create_dataframe_reqparser,
@@ -17,6 +21,7 @@ from metis_ai_services.api.dataframe.dto import (
     update_dataframe_reqparser,
     # export_dataframe_reqparser,
     query_dataframe_reqparser,
+    download_dataframe_reqparser,
     dataframe_model,
 )
 
@@ -109,3 +114,29 @@ class DataFrameQuery(Resource):
         df_id = request_data.get("df_id")
         select_sql_stmt = request_data.get("select_sql_stmt")
         return query_dataframe(df_id, select_sql_stmt)
+
+@ns_dataframe.route("/download", endpoint = "df_download")
+class DataFrameDownload(Resource):
+    @ns_dataframe.expect(download_dataframe_reqparser)
+    @ns_dataframe.response(int(HTTPStatus.BAD_REQUEST), "Validation error.")
+    @ns_dataframe.response(int(HTTPStatus.INTERNAL_SERVER_ERROR), "Interal server error.")
+    def post(self):
+        request_data = download_dataframe_reqparser.parse_args()
+        df_id = request_data.get("df_id")
+        select_sql_stmt = request_data.get("select_sql_stmt")
+        download = request_data.get("download")
+        if int(download) == 1:
+            query_result = download_dataframe(df_id, select_sql_stmt)
+            si = StringIO()
+            cw = csv.writer(si)
+            cw.writerows(query_result)
+            response = make_response(si.getvalue())
+            response.headers["Content-Disposition"] = "attachment; filename=download.csv"
+            response.headers["Content-type"] = "text/csv"
+            return response
+        else:
+            return HTTPStatus.OK
+
+
+
+
