@@ -1,6 +1,8 @@
 # metis-ai-services
 ## Clone git
+```
 git clone https://github.com/buryhuang/metis-ai-services.git
+```
 
 ## Local Development Setup
 
