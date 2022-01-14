@@ -1,4 +1,8 @@
 # metis-ai-services
+
+## API Spec
+https://api.metis-ai.com/v1/
+
 ## Clone git
 ```
 git clone https://github.com/buryhuang/metis-ai-services.git
